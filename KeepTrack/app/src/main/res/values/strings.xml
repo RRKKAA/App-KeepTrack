@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">KeepTrack</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="btn_login">Ingresar</string>
+    <string name="btn_historial">Historial</string>
+    <string name="btn_logros">Logros</string>
+    <string name="btn_progreso">Progreso</string>
+    <string name="tareas">Tareas del dia</string>
+    <string name="nueva_tarea">Nueva tarea</string>
+    <string name="nueva_lista">Nueva lista</string>
+    <string name="progreso">Progreso</string>
+    <string name="logros">logros</string>
+    <string name="historial">Historial</string>
+    <string name="progreso1">Tareas completadas  NA</string>
+    <string name="progreso2">Tareas incompletas  NA</string>
+    <string name="progreso3">Tareas a completar  NA</string>
+    <string name="nombre">Nombre</string>
+    <string name="horario">Horario</string>
+    <string name="fecha">Fecha</string>
+    <string name="alerta">Alerta</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="btn_crear">Crear</string>
+    <string name="btn_modificar">Modificar</string>
+</resources>
