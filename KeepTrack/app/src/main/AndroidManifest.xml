@@ -13,21 +13,6 @@
         android:theme="@style/Theme.KeepTrack"
         tools:targetApi="31">
         <activity
-            android:name=".progreso"
-            android:exported="true" />
-        <activity
-            android:name=".historial"
-            android:exported="true" />
-        <activity
-            android:name=".logros"
-            android:exported="true" />
-        <activity
-            android:name=".crearLista"
-            android:exported="true" />
-        <activity
-            android:name=".crearTarea"
-            android:exported="true" />
-        <activity
             android:name=".principal"
             android:exported="true" />
         <activity

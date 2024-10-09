@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class principal extends AppCompatActivity {
 
@@ -26,6 +29,39 @@ public class principal extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        FloatingActionButton nuevatarea = findViewById(R.id.nuevatarea);
+        Button historial = findViewById(R.id.historial);
+        Button logros = findViewById(R.id.logros);
+        Button progreso = findViewById(R.id.progreso);
+
+        nuevatarea.setOnClickListener(v -> {
+            crear_tarea cr = new crear_tarea();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentos, cr)
+                    .addToBackStack(null)
+                    .commit();
+        });
+        historial.setOnClickListener(v -> {
+            historial cr = new historial();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentos, cr)
+                    .addToBackStack(null)
+                    .commit();
+        });
+        logros.setOnClickListener(v -> {
+            logros cr = new logros();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentos, cr)
+                    .addToBackStack(null)
+                    .commit();
+        });
+        progreso.setOnClickListener(v -> {
+            progreso cr = new progreso();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentos, cr)
+                    .addToBackStack(null)
+                    .commit();
+        });
     }
 
     public void setSupportActionBar(Toolbar tb) {
@@ -36,34 +72,5 @@ public class principal extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.menu1,menu);
         return true;
-    }
-    public void go_Back(View v){
-        Intent i = new Intent(this,principal.class);
-        startActivity(i);
-    }
-
-    public void new_task(View v){
-        Intent i = new Intent(this,crearTarea.class);
-        startActivity(i);
-    }
-
-    public void new_list(View v){
-        Intent i = new Intent(this,crearLista.class);
-        startActivity(i);
-    }
-
-    public void to_progress(View v){
-        Intent i = new Intent(this,progreso.class);
-        startActivity(i);
-    }
-
-    public void to_history(View v){
-        Intent i = new Intent(this,historial.class);
-        startActivity(i);
-    }
-
-    public void to_achievments(View v){
-        Intent i = new Intent(this,logros.class);
-        startActivity(i);
     }
 }

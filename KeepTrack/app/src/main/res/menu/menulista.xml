@@ -5,7 +5,6 @@
     <item
         android:id="@+id/goback"
         android:icon="@android:drawable/arrow_down_float"
-        android:onClick="go_Back"
         android:title="Item"
         app:showAsAction="ifRoom" />
 </menu>
