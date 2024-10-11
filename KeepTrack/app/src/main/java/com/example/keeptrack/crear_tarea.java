@@ -1,17 +1,34 @@
 package com.example.keeptrack;
 
+import com.example.keeptrack.FileHelper;
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.app.DatePickerDialog;
+import android.widget.DatePicker;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.widget.EditText;
+import android.widget.TimePicker;
+
+
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +45,9 @@ public class crear_tarea extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private String selectedDate = "";
+    private String selectedTime = "";
 
     public crear_tarea() {
         // Required empty public constructor
@@ -91,4 +111,84 @@ public class crear_tarea extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Button selectFecha = view.findViewById(R.id.select_fecha);
+        Button selectHorario = view.findViewById(R.id.select_horario);
+        Button tareaCrear = view.findViewById(R.id.btn_crear);
+        Button tareaCancelar = view.findViewById(R.id.btn_cancelar);
+
+        selectFecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        requireContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                selectedDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+                                selectFecha.setText(selectedDate);
+                            }
+                        },
+                        year, month, day);
+                datePickerDialog.show();
+            }
+        });
+        selectHorario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+
+                TimePickerDialog timePickerDialog = new TimePickerDialog(
+                        requireContext(),
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                selectedTime = hourOfDay + ":" + minute;
+                                selectHorario.setText(selectedTime); // Update button text
+                            }
+                        },
+                        hour, minute, true); // true for 24-hour format
+                timePickerDialog.show();
+            }
+        });
+        tareaCrear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText nombreInput = view.findViewById(R.id.nombre); // Replace with your input field IDs
+                EditText alertaInput = view.findViewById(R.id.alerta);
+                // Get input values (nombre, alerta, selectedDate, selectedTime)
+                String nombre = nombreInput.getText().toString();
+                String alerta = alertaInput.getText().toString();
+                // ...
+
+                Tarea newTask = new Tarea(nombre, alerta, selectedDate, selectedTime);
+
+                List<Tarea> tasks = FileHelper.readTasksFromFile(requireContext());
+                tasks.add(newTask);
+                FileHelper.writeTasksToFile(requireContext(), tasks);
+                requireActivity().onBackPressed();
+
+                // Optionally, navigate back to the previous fragment or activity
+                // requireActivity().onBackPressed();
+            }
+        });
+        tareaCancelar.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                requireActivity().onBackPressed();
+            }
+        });
+    }
+
 }
