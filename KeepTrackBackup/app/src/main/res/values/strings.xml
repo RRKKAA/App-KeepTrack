@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">KeepTrack</string>
+    <string name="correo">Correo</string>
+    <string name="contrasenia">Contraseña</string>
+    <string name="btn_ingresar">Ingresar</string>
+    <string name="btn_tareas1">Ver Tareas</string>
+    <string name="btn_tareas2">Ver Tareas Diarias</string>
+    <string name="btn_historial">Historial</string>
+    <string name="btn_logros">Logros</string>
+    <string name="btn_progreso">Progreso</string>
+    <string name="btn_nueva_tareas">Crear Tarea</string>
+    <string name="nombre">Nombre</string>
+    <string name="alerta">Alerta</string>
+    <string name="fecha">Fecha</string>
+    <string name="hora">Hora</string>
+    <string name="diario">Tarea Diaria</string>
+    <string name="dias">Dias</string>
+    <string name="seleccione_dias">Seleccione Dias</string>
+    <string name="seleccione_fecha">Seleccione Fecha</string>
+    <string name="seleccione_hora">Seleccione Hora</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="btn_crear">Crear</string>
+    <string name="btn_ok">OK</string>
+    <string name="lunes">Lunes</string>
+    <string name="martes">Martes</string>
+    <string name="miercoles">Miercoles</string>
+    <string name="jueves">Jueves</string>
+    <string name="viernes">Viernes</string>
+    <string name="sabado">Sabado</string>
+    <string name="domingo">Domingo</string>
+    <string name="sintareas">Sin Tareas</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

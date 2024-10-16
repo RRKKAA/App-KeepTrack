@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <CheckBox
+        android:id="@+id/lunes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lunes"
+        android:textSize="24sp" />
+
+    <CheckBox
+        android:id="@+id/martes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/martes"
+        android:textSize="24sp" />
+
+    <CheckBox
+        android:id="@+id/miercoles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/miercoles"
+        android:textSize="24sp" />
+
+    <CheckBox
+        android:id="@+id/jueves"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/jueves"
+        android:textSize="24sp" />
+
+    <CheckBox
+        android:id="@+id/viernes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/viernes"
+        android:textSize="24sp" />
+
+    <CheckBox
+        android:id="@+id/sabado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sabado"
+        android:textSize="24sp" />
+
+    <CheckBox
+        android:id="@+id/domingo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/domingo"
+        android:textSize="24sp" />
+
+
+</LinearLayout>
