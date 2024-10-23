@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CrearTarea"
+    tools:context=".ui.ModificarTarea"
     android:background="@color/white">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingTop="35dp"
-            android:text="@string/btn_nueva_tareas"
+            android:text="@string/ModificarTarea"
             android:textSize="40sp" />
 
         <LinearLayout

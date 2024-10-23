@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_tareas1"
+        android:title="@string/btn_tareas1" />
+    <item
+        android:id="@+id/nav_tareas2"
+        android:title="@string/btn_tareas2" />
+    <item
+        android:id="@+id/nav_crear_tareas"
+        android:title="@string/btn_nueva_tareas" />
+    <item
+        android:id="@+id/nav_historial"
+        android:title="@string/btn_historial" />
+    <item
+        android:id="@+id/nav_logros"
+        android:title="@string/btn_logros" />
+    <item
+        android:id="@+id/nav_progreso"
+        android:title="@string/btn_progreso" />
+</menu>

@@ -2,7 +2,19 @@
     <string name="app_name">KeepTrack</string>
     <string name="correo">Correo</string>
     <string name="contrasenia">Contraseña</string>
+    <string name="btn_registrar">Registrarse</string>
+    <string name="btn_volver">Volver</string>
+    <string name="btn_iniciar_sesion">Iniciar Sesion</string>
+    <string name="registrar">Registrar</string>
     <string name="btn_ingresar">Ingresar</string>
+    <string name="correo_invalido">Correo Invalido</string>
+    <string name="contrasenia_invalida">Contraseña Invalida</string>
+    <string name="contrasenias_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="correo_ya_registrado">Correo ya registrado</string>
+    <string name="contrasenia_corta">Contraseña muy corta</string>
+    <string name="contrasenia_vacia">Contraseña vacia</string>
+    <string name="correo_vacio">Correo vacio</string>
+
     <string name="btn_tareas1">Ver Tareas</string>
     <string name="btn_tareas2">Ver Tareas Diarias</string>
     <string name="btn_historial">Historial</string>
@@ -29,6 +41,11 @@
     <string name="sabado">Sabado</string>
     <string name="domingo">Domingo</string>
     <string name="sintareas">Sin Tareas</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="modificar">Modificar</string>
+    <string name="opciones">Opciones</string>
+    <string name="ModificarTarea">Modificar Tarea</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -19,22 +19,35 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/taskTimeTextView"
+            android:id="@+id/deadlineTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hour" />
+            android:text="Deadline Time" />
 
         <TextView
-            android:id="@+id/taskDateOrDaysTextView"
+            android:id="@+id/deadlineDateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date/Days" />
+            android:text="Deadline Date/Day" />
+
+        <TextView
+            android:id="@+id/completionHourTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completion Hour" />
+
+        <TextView
+            android:id="@+id/completionDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completion Date" />
+
+        <TextView
+            android:id="@+id/completionStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completion Status" />
 
     </LinearLayout>
-
-    <Switch
-        android:id="@+id/taskCompletedSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
