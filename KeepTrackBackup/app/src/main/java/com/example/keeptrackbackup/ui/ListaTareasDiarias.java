@@ -28,6 +28,7 @@ public class ListaTareasDiarias extends Fragment {
 
     private RecyclerView ListaTareasDiarias;
     private TextView SinTareasDiarias;
+    private List<Tarea> taskList = new ArrayList<>();
     private TaskAdapter taskAdapter;
 
     @Override
@@ -39,11 +40,7 @@ public class ListaTareasDiarias extends Fragment {
 
         ListaTareasDiarias.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Get NavHostFragment and its view
-        NavHostFragment navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment); // Replace with your NavHostFragment ID
-        View navHostView = navHostFragment.getView();
-
-        taskAdapter = new TaskAdapter(new ArrayList<>(), navHostView);
+        taskAdapter = new TaskAdapter(taskList, getView(), getParentFragmentManager());
         ListaTareasDiarias.setAdapter(taskAdapter);
 
         loadTaskData();

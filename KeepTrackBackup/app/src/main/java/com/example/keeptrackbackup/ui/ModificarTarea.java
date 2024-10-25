@@ -1,21 +1,18 @@
 package com.example.keeptrackbackup.ui;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.fragment.app.DialogFragment;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,60 +22,96 @@ import java.util.List;
 
 import com.example.keeptrackbackup.R;
 import com.example.keeptrackbackup.data.Tarea;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-public class ModificarTarea extends Fragment {
+public class ModificarTarea extends DialogFragment {
 
-    private static final String ARG_TASK_KEY = "task_key";
+    public static final String ARG_TASK_KEY = "task_key";
     private Tarea tarea;
     private String taskKey;
 
     private Button crearFechaButton;
     private Button crearHoraButton;
     private Button crearDiasButton;
-    private Button crearConfirmarButton;
-    private Button crearCancelarButton;
     private List<String> DiasSeleccionados = new ArrayList<>();
 
+    public static ModificarTarea newInstance(String taskKey) {
+        ModificarTarea fragment = new ModificarTarea();
+        Bundle args = new Bundle();
+        args.putString(ARG_TASK_KEY, taskKey);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_crear_tarea, container, false);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_modificar_tarea, null); // Use your layout
 
+        // Initialize views from the layout
+        EditText alertaEditText = view.findViewById(R.id.CrearAlerta);
+        crearDiasButton = view.findViewById(R.id.CrearDias);
         crearFechaButton = view.findViewById(R.id.CrearFecha);
-        crearFechaButton.setOnClickListener(v -> showDatePickerDialog());
-
         crearHoraButton = view.findViewById(R.id.CrearHora);
+
+        // Set up listeners for buttons and other interactions
+        crearDiasButton.setOnClickListener(v -> showDaySelectionDialog());
+        crearFechaButton.setOnClickListener(v -> showDatePickerDialog());
         crearHoraButton.setOnClickListener(v -> showTimePickerDialog());
 
-        crearDiasButton = view.findViewById(R.id.CrearDias);
-        crearDiasButton.setOnClickListener(v -> showDaySelectionDialog());
-
-        crearConfirmarButton = view.findViewById(R.id.CrearConfirmar);
-        crearConfirmarButton.setOnClickListener(v -> updateAndSaveTarea());
-
-        crearCancelarButton= view.findViewById(R.id.CrearCancelar);
-        crearCancelarButton.setOnClickListener(v -> cancelarTarea());
-
-        taskKey = getArguments().getString(ARG_TASK_KEY);
-
+        String taskKey = getArguments().getString(ARG_TASK_KEY);
         Tarea.loadFromFirebase(taskKey, new Tarea.OnTareaLoadedListener() {
             @Override
             public void onTareaLoaded(Tarea loadedTarea) {
                 tarea = loadedTarea;
-                // Populate UI elements with task data
-                populateUIWithTaskData(tarea);
             }
 
             @Override
-            public void onTareaLoadError(Exception e) {
+            public void onTareaLoadError(java.lang.Exception e) {
                 // Handle error loading task
                 // ...
             }
         });
 
+        builder.setView(view)
+                .setTitle("Modificar Tarea")
+                .setPositiveButton("Guardar", (dialog, id) -> {
+                    // Update task data and save to Firebase
+                    String alerta = alertaEditText.getText().toString();
+                    String fechaString = crearFechaButton.getText().toString();
+                    String horaString = crearHoraButton.getText().toString();
 
-        return view;
+                    // ... (Get values from other views: DiasSeleccionados, fecha, hora) ...
+
+                    if (!alerta.isEmpty()) {
+                        tarea.setAlerta(alerta);
+                    }
+                    if (!DiasSeleccionados.isEmpty()) {
+                        tarea.setDias(DiasSeleccionados);
+                    }
+                    if (!fechaString.isEmpty() && !fechaString.equals(getString(R.string.seleccione_fecha))) {
+                        try {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            Date fecha = dateFormat.parse(fechaString);
+                            tarea.setFecha(fecha);
+                        } catch (ParseException e) {
+                            // Handle parsing error
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!horaString.isEmpty() && !horaString.equals(getString(R.string.seleccione_hora))) {
+                        tarea.setHora(horaString);
+                    }
+                    // ... (Set other values: fecha, hora) ...
+
+                    tarea.saveToFirebase(taskKey);
+                    dismiss(); // Close the dialog
+                })
+                .setNegativeButton("Cancelar", (dialog, id) -> {
+                    dismiss(); // Close the dialog
+                });
+
+        return builder.create();
     }
 
     private void showDatePickerDialog() {
@@ -204,86 +237,5 @@ public class ModificarTarea extends Fragment {
             String dias = String.join(", ", DiasSeleccionados);
             crearDiasButton.setText(dias);
         }
-    }
-
-    private void cancelarTarea(){
-        NavController navController = Navigation.findNavController(requireView());
-        navController.navigateUp();
-    }
-
-    private void populateUIWithTaskData(Tarea task) {
-        // Populate UI elements with task data
-        EditText nombreEditText = getView().findViewById(R.id.CrearNombre);
-        nombreEditText.setText(task.getNombre());
-
-        EditText alertaEditText = getView().findViewById(R.id.CrearAlerta);
-        alertaEditText.setText(task.getAlerta());
-
-        DiasSeleccionados = task.getDias();
-        updateButtonText();
-
-        if (task.getFecha() != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            crearFechaButton.setText(dateFormat.format(task.getFecha()));
-        }
-
-        if (task.getHora() != null) {
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-            crearHoraButton.setText(timeFormat.format(task.getHora()));
-        }
-
-        ((android.widget.Switch) getView().findViewById(R.id.TareaDiaria)).setChecked(task.getDiario());
-    }
-
-    private void updateAndSaveTarea() {
-
-        EditText nombreEditText = getView().findViewById(R.id.CrearNombre);
-        if (nombreEditText != null) {
-            tarea.setNombre(nombreEditText.getText().toString());
-        }
-
-        EditText alertaEditText = getView().findViewById(R.id.CrearAlerta);
-        if (alertaEditText != null) {
-            tarea.setAlerta(alertaEditText.getText().toString());
-        }
-
-        tarea.setDias(DiasSeleccionados);
-
-        String fechaString = crearFechaButton.getText().toString();
-        if (fechaString.isEmpty()) {
-            tarea.setFecha(null); // Set to null if empty
-        } else {
-            try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date fecha = dateFormat.parse(fechaString);
-                tarea.setFecha(fecha);
-            } catch (ParseException e) {
-                // Handle parsing error
-                e.printStackTrace();
-            }
-        }
-
-        String horaString = crearHoraButton.getText().toString();
-        if (horaString.isEmpty()) {
-            tarea.setHora(null); // Set to null if empty
-        } else {
-            tarea.setHora(horaString);
-        }
-
-        tarea.setDiario(((android.widget.Switch) getView().findViewById(R.id.TareaDiaria)).isChecked());
-        tarea.setCompletada(false);
-
-        tarea.saveToFirebase(taskKey);
-
-        NavController navController = Navigation.findNavController(requireView());
-        navController.navigateUp();
-    }
-
-    public static ModificarTarea newInstance(String taskKey) {
-        ModificarTarea fragment = new ModificarTarea();
-        Bundle args = new Bundle();
-        args.putString(ARG_TASK_KEY, taskKey);
-        fragment.setArguments(args);
-        return fragment;
     }
 }

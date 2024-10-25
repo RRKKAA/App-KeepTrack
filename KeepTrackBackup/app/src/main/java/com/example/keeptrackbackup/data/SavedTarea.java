@@ -8,7 +8,7 @@ public class SavedTarea {
     private String HoraLimite;
     private Date FechaLimite; // For deadline-based tasks
     private String Dia; // For daily tasks
-    private Time HoraComplecion;
+    private String HoraComplecion;
     private Date FechaComplecion; // For deadline-based tasks
     private boolean completado;
     private String key; // Add a field to store the key
@@ -61,11 +61,11 @@ public class SavedTarea {
         this.Dia = dia;
     }
 
-    public Time getHoraComplecion() {
+    public String getHoraComplecion() {
         return HoraComplecion;
     }
 
-    public void setHoraComplecion(Time horaComplecion) {
+    public void setHoraComplecion(String horaComplecion) {
         this.HoraComplecion = horaComplecion;
     }
 

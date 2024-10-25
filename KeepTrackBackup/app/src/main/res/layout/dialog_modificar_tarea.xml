@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/CrearAlerta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Alerta" />
+
+    <Button
+        android:id="@+id/CrearDias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar Días" />
+
+    <Button
+        android:id="@+id/CrearFecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar Fecha" />
+
+    <Button
+        android:id="@+id/CrearHora"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar Hora" />
+
+</LinearLayout>

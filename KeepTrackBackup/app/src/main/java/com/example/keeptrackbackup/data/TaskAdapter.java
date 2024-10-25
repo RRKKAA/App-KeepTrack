@@ -16,19 +16,25 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.navigation.Navigation;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private List<Tarea> taskList;
     private View fragmentView;
+    private TaskAdapter taskAdapter;
+    private FragmentManager fragmentManager;
 
-    public TaskAdapter(List<Tarea> taskList, View fragmentView) {
+    public TaskAdapter(List<Tarea> taskList, View fragmentView, FragmentManager fragmentManager) {
         this.taskList = taskList;
         this.fragmentView = fragmentView;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -45,30 +51,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         holder.taskTimeTextView.setText(task.getHora().toString());
 
         holder.taskCompletedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            String taskKey = task.getKey();
-
-            if (isChecked) {
-                // Task completed, create SavedTarea instance
-                SavedTarea savedTask = createSavedTarea(task, true);
-
-                // Prevent duplicate SavedTarea instances
-                if (!task.getDiario()) { // Deadline task
-                    preventDuplicateDeadlineTask(savedTask);
-                } else { // Daily task
-                    preventDuplicateDailyTask(savedTask, task);
-                }
-
-                if (!task.getDiario()) { // Delete if not daily
-                    task.deleteFromFirebase(taskKey);
-                }
-            } else {
-                // Task uncompleted, remove from history (if needed)
-                // ... (Implement logic to remove from history if necessary) ...
-            }
-
-            // Update the completion status in Firebase
-            task.updateCompletionStatusInFirebase(taskKey, isChecked);
+            handleTaskCompletion(task, isChecked);
         });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            showTaskOptionsDialog(task, holder.itemView);
+            return true; // Consume the long click event
+        });
+
         // ... (set other views based on task data) ...
         if (task.getDiario()) {
             holder.taskDateOrDaysTextView.setText(task.getDias().toString()); // Assuming you have a getDias() method in Tarea
@@ -76,37 +66,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             holder.taskDateOrDaysTextView.setText(task.getFecha().toString()); // Assuming you have a getFecha() method in Tarea
         }
         holder.taskCompletedSwitch.setChecked(task.isCompletada());
-
-        holder.taskCompletedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // Get the task's key (you'll need to store this somewhere, e.g., in the Tarea object)
-            String taskKey = task.getKey(); // Assuming you have a getKey() method in Tarea
-
-            if (isChecked) {
-                // Task completed, create SavedTarea instance
-                SavedTarea savedTask = createSavedTarea(task, true);
-
-                // Prevent duplicate SavedTarea instances
-                if (!task.getDiario()) { // Deadline task
-                    preventDuplicateDeadlineTask(savedTask);
-                } else { // Daily task
-                    preventDuplicateDailyTask(savedTask, task);
-                }
-
-                if (!task.getDiario()) { // Delete if not daily
-                    task.deleteFromFirebase(taskKey);
-                }
-            } else {
-                // Task uncompleted, remove from history (if needed)
-                // ... (Implement logic to remove from history if necessary) ...
-            }
-
-            // Update the completion status in Firebase
-            task.updateCompletionStatusInFirebase(taskKey, isChecked);
-        });
-        holder.itemView.setOnLongClickListener(v -> {
-            showTaskOptionsDialog(task, holder.itemView);
-            return true; // Consume the long click event
-        });
     }
 
     private void preventDuplicateDeadlineTask(SavedTarea savedTask) {
@@ -160,12 +119,63 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     private SavedTarea createSavedTarea(Tarea task, boolean completed) {
         SavedTarea savedTask = new SavedTarea();
         savedTask.setNombre(task.getNombre());
-        savedTask.setHoraLimite(task.getHora()); // Assuming getHora() returns Time
-        savedTask.setFechaLimite(task.getFecha()); // Assuming getFecha() returns Date
+        savedTask.setHoraLimite(task.getHora());
+        savedTask.setFechaLimite(task.getFecha());
+        savedTask.setCompletado(completed);
+
+        if (task.getDiario()) {
+            savedTask.setDia(task.getDias().toString()); // Assuming getDias() returns a list of days
+            // You might need to handle HoraComplecion and FechaComplecion differently for daily tasks
+        } else {
+            savedTask.setHoraComplecion(getCurrentTime()); // Assuming you have a getCurrentTime() method
+            savedTask.setFechaComplecion(new Date()); // Or getCurrentDate()
+        }
 
         // ... (set other fields) ...
 
         return savedTask;
+    }
+
+    private String getCurrentTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return dateFormat.format(new Date());
+    }
+
+    private void handleTaskCompletion(Tarea task, boolean isChecked) {
+        String taskKey = task.getKey();
+
+        if (isChecked) {
+            SavedTarea savedTask = createSavedTarea(task, true);
+            preventDuplicateSavedTask(savedTask, task);
+
+            if (!task.getDiario()) {
+                // Use updateChildren to update the task with completed: true
+                DatabaseReference taskRef = FirebaseDatabase.getInstance().getReference("tasks").child(taskKey);
+                HashMap<String, Object> updates = new HashMap<>();
+                updates.put("completado", true); // Update only the "completado" field
+                taskRef.updateChildren(updates)
+                        .addOnSuccessListener(aVoid -> {
+                            // Task updated successfully, now delete it
+                            task.deleteFromFirebase(taskKey);
+                        })
+                        .addOnFailureListener(e -> {
+                            // Handle error during update
+                        });
+            }
+        } else {
+            // ... (Implement logic to remove from history if necessary) ...
+        }
+
+        // Update the completion status in Firebase (for daily tasks)
+        if (task.getDiario()) {
+            task.updateCompletionStatusInFirebase(taskKey, isChecked);
+        }
+    }
+
+    private void preventDuplicateSavedTask(SavedTarea savedTask, Tarea task) {
+        if (!task.getDiario()) {
+            preventDuplicateDeadlineTask(savedTask);
+        }
     }
 
     private void addToHistory(SavedTarea savedTask) {
@@ -206,7 +216,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                     deleteTask(task);
                     break;
                 case 1: // Modify
-                    modifyTask(task, itemView);
+                    modifyTask(task);
                     break;
             }
         });
@@ -235,11 +245,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    private void modifyTask(Tarea task, View itemView) {
-        // Navigate to ModificarTarea fragment
+    private void modifyTask(Tarea task) {
         String taskKey = task.getKey();
-        ModificarTarea fragment = ModificarTarea.newInstance(taskKey);
-        Navigation.findNavController(fragmentView).navigate(R.id.action_ListaTareas_to_modificarTarea, fragment.getArguments());// Replace with your action ID
+        ModificarTarea modificarTareaDialog = ModificarTarea.newInstance(taskKey); // Use newInstance()
+
+        modificarTareaDialog.show(fragmentManager, "modificarTareaDialog");
     }
 
     @Override

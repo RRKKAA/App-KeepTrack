@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.keeptrackbackup.R;
 import com.example.keeptrackbackup.data.Tarea;
+import com.example.keeptrackbackup.data.SavedTarea;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,6 +47,7 @@ public class Progreso extends Fragment {
     private void loadTaskData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference tasksRef = database.getReference("tasks");
+
 
         tasksRef.addValueEventListener(new ValueEventListener() {
             @Override
